@@ -17,4 +17,4 @@ databaseChangeLog:
 
             CREATE INDEX ON ${schema.name}.county USING gist (geom);
     - rollback:
-        DROP TABLE IF EXISTS ${schema.name}.county;
+        DROP TABLE IF EXISTS ${schema.name}.county CASCADE;

@@ -17,4 +17,4 @@ databaseChangeLog:
 
             CREATE INDEX ON ${schema.name}.area USING gist (geom);
     - rollback:
-        DROP TABLE IF EXISTS ${schema.name}.area;
+        DROP TABLE IF EXISTS ${schema.name}.area CASCADE;

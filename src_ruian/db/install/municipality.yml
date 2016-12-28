@@ -17,4 +17,4 @@ databaseChangeLog:
 
             CREATE INDEX ON ${schema.name}.municipality USING gist (geom);
     - rollback:
-        DROP TABLE IF EXISTS ${schema.name}.municipality;
+        DROP TABLE IF EXISTS ${schema.name}.municipality CASCADE;

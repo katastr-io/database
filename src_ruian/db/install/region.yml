@@ -14,4 +14,4 @@ databaseChangeLog:
 
             CREATE INDEX ON ${schema.name}.region USING gist (geom);
     - rollback:
-        DROP TABLE IF EXISTS ${schema.name}.region;
+        DROP TABLE IF EXISTS ${schema.name}.region CASCADE;
