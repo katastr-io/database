@@ -9,7 +9,7 @@ databaseChangeLog:
     - sql:
         sql: |
             -- postgis extension
-            CREATE EXTENSION IF NOT EXISTS postgis;
+            CREATE EXTENSION IF NOT EXISTS postgis SCHEMA public;
 
             -- implicit casts
             CREATE CAST (varchar AS integer) WITH INOUT AS IMPLICIT;
