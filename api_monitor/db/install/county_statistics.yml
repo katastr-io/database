@@ -1,0 +1,82 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-table-${schema.name}.county_statistics
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            CREATE TABLE ${schema.name}.county_statistics (
+                code integer,
+                name text,
+                valid_at date,
+                total_count /*celkovy_pocet_parcel*/ integer,
+                total_area /*celkova_vymera*/ numeric,
+                arable_land_count /*orna_puda_pp*/ integer,
+                arable_land_area /*orna_puda_v*/ integer,
+                hop_garden_count /*chmelnice_pp*/ integer,
+                hop_garden_area /*chmelnice_v*/ integer,
+                vineyard_count /*vinice_pp*/ integer,
+                vineyard_area /*vinice_v*/ integer,
+                garden_count /*zahrada_pp*/ integer,
+                garden_area /*zahrada_v*/ integer,
+                orchard_count /*ovocny_sad_pp*/ integer,
+                orchard_area /*ovocny_sad_v*/ integer,
+                grassland_count /*ttp_pp*/ integer,
+                grassland_area /*ttp_v*/ integer,
+                forest_count /*lesni_pozemek_pp*/ integer,
+                forest_area /*lesni_pozemek_v*/ integer,
+                waterbody_count /*vodni_plocha_pp*/ integer,
+                waterbody_area /*vodni_plocha_v*/ integer,
+                builtup_area_count /*zastavena_plocha_pp*/ integer,
+                builtup_area_area /*zastavena_plocha_v*/ integer,
+                other_area_count /*ostatni_plocha_pp*/ integer,
+                other_area_area /*ostatni_plocha_v*/ integer,
+                --
+                /**
+                 * Deliberately suffxing these columns with `1`
+                 * so they don't appear in charts.
+                 */
+                agriculture_land_count /*zemedelska_puda_pp1*/ integer,
+                agriculture_land_area /*zemedelska_puda_v1*/ integer,
+                agriculture_land_count_ratio /*zemedelska_puda_pp_r1*/ numeric,
+                agriculture_land_area_ratio /*zemedelska_puda_v_r1*/ numeric,
+                --
+                arable_land_count_ratio /*orna_puda_pp_r*/ numeric,
+                hop_garden_count_ratio /*chmelnice_pp_r*/ numeric,
+                vineyard_count_ratio /*vinice_pp_r*/ numeric,
+                garden_count_ratio /*zahrada_pp_r*/ numeric,
+                orchard_count_ratio /*ovocny_sad_pp_r*/ numeric,
+                grassland_count_ratio /*ttp_pp_r*/ numeric,
+                forest_count_ratio /*lesni_pozemek_pp_r*/ numeric,
+                waterbody_count_ratio /*vodni_plocha_pp_r*/ numeric,
+                builtup_area_count_ratio /*zastavena_plocha_pp_r*/ numeric,
+                other_area_count_ratio /*ostatni_plocha_pp_r*/ numeric,
+                --
+                arable_land_area_ratio /*orna_puda_v_r*/ numeric,
+                hop_garden_area_ratio /*chmelnice_v_r*/ numeric,
+                vineyard_area_ratio /*vinice_v_r*/ numeric,
+                garden_area_ratio /*zahrada_v_r*/ numeric,
+                orchard_area_ratio /*ovocny_sad_v_r*/ numeric,
+                grassland_area_ratio /*ttp_v_r*/ numeric,
+                forest_area_ratio /*lesni_pozemek_v_r*/ numeric,
+                waterbody_area_ratio /*vodni_plocha_v_r*/ numeric,
+                builtup_area_area_ratio /*zastavena_plocha_v_r*/ numeric,
+                other_area_area_ratio /*ostatni_plocha_v_r*/ numeric,
+                --
+                arable_land_area_average /*orna_puda_v_avg*/ numeric,
+                hop_garden_area_average /*chmelnice_v_avg*/ numeric,
+                vineyard_area_average /*vinice_v_avg*/ numeric,
+                garden_area_average /*zahrada_v_avg*/ numeric,
+                orchard_area_average /*ovocny_sad_v_avg*/ numeric,
+                grassland_area_average /*ttp_v_avg*/ numeric,
+                forest_area_average /*lesni_pozemek_v_avg*/ numeric,
+                waterbody_area_average /*vodni_plocha_v_avg*/ numeric,
+                builtup_area_area_average /*zastavena_plocha_v_avg*/ numeric,
+                other_area_area_average /*ostatni_plocha_v_avg*/ numeric,
+                --
+                FOREIGN KEY (code) REFERENCES src_ruian.county (code),
+                UNIQUE (code, valid_at)
+            );
+    - rollback:
+        DROP TABLE IF EXISTS ${schema.name}.county_statistics;

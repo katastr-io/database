@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-schema-${schema.name}
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            CREATE SCHEMA ${schema.name};
+    - rollback:
+        DROP SCHEMA ${schema.name} CASCADE;

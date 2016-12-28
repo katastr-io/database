@@ -1,0 +1,16 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: install-schema-${schema.name}
+    changes:
+    - tagDatabase:
+        tag: INSTALL-SCHEMA-${schema.name}
+- include:
+    relativeToChangelogFile: true
+    file: update_area_statistics.yml
+- include:
+    relativeToChangelogFile: true
+    file: update_municipality_statistics.yml
+- include:
+    relativeToChangelogFile: true
+    file: update_county_statistics.yml

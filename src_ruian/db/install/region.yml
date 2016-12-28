@@ -1,0 +1,17 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-table-${schema.name}.region
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            CREATE TABLE ${schema.name}.region (
+                code integer PRIMARY KEY,
+                name text NOT NULL,
+                geom geometry(MULTIPOLYGON, 5514)
+            );
+
+            CREATE INDEX ON ${schema.name}.region USING gist (geom);
+    - rollback:
+        DROP TABLE IF EXISTS ${schema.name}.region;

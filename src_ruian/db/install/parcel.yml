@@ -1,0 +1,22 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-table-${schema.name}.parcel
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            CREATE TABLE ${schema.name}.parcel (
+                id bigint PRIMARY KEY,
+                root_number integer,
+                part_number integer,
+                area integer,
+                area_code integer,
+                geom geometry(MULTIPOLYGON, 5514),
+                --
+                FOREIGN KEY (area_code) REFERENCES ${schema.name}.area (code)
+            );
+
+            CREATE INDEX ON ${schema.name}.parcel USING gist (geom);
+    - rollback:
+        DROP TABLE IF EXISTS ${schema.name}.parcel CASCADE;

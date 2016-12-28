@@ -1,0 +1,20 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-table-${schema.name}.municipality
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            CREATE TABLE ${schema.name}.municipality (
+                code integer PRIMARY KEY,
+                name text NOT NULL,
+                county_code integer,
+                geom geometry(MULTIPOLYGON, 5514),
+                --
+                FOREIGN KEY (county_code) REFERENCES ${schema.name}.county (code)
+            );
+
+            CREATE INDEX ON ${schema.name}.municipality USING gist (geom);
+    - rollback:
+        DROP TABLE IF EXISTS ${schema.name}.municipality;

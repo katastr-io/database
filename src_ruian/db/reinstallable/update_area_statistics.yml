@@ -1,0 +1,75 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-procedure-${schema.name}.update_area_statistics
+    runOnChange: true
+    changes:
+    - createProcedure:
+        procedureName: update_area_statistics
+        dbms: postgresql
+        procedureBody: |-
+            CREATE OR REPLACE FUNCTION ${schema.name}.update_area_statistics()
+            RETURNS VOID
+            AS
+            $update_area_statistics$
+            DECLARE
+            BEGIN
+                UPDATE ${schema.name}.area_statistics
+                SET
+                    arable_land_count_ratio = arable_land_count::numeric / total_count::numeric * 100,
+                    hop_garden_count_ratio = hop_garden_count::numeric / total_count::numeric * 100,
+                    vineyard_count_ratio = vineyard_count::numeric / total_count::numeric * 100,
+                    garden_count_ratio = garden_count::numeric / total_count::numeric * 100,
+                    orchard_count_ratio = orchard_count::numeric / total_count::numeric * 100,
+                    grassland_count_ratio = grassland_count::numeric / total_count::numeric * 100,
+                    forest_count_ratio = forest_count::numeric / total_count::numeric * 100,
+                    waterbody_count_ratio = waterbody_count::numeric / total_count::numeric * 100,
+                    builtup_area_count_ratio = builtup_area_count::numeric / total_count::numeric * 100,
+                    other_area_count_ratio = other_area_count::numeric / total_count::numeric * 100,
+                    ---
+                    arable_land_area_ratio = arable_land_area::numeric / total_area::numeric * 100,
+                    hop_garden_area_ratio = hop_garden_area::numeric / total_area::numeric * 100,
+                    vineyard_area_ratio = vineyard_area::numeric / total_area::numeric * 100,
+                    garden_area_ratio = garden_area::numeric / total_area::numeric * 100,
+                    orchard_area_ratio = orchard_area::numeric / total_area::numeric * 100,
+                    grassland_area_ratio = grassland_area / total_area::numeric * 100::numeric,
+                    forest_area_ratio = forest_area::numeric / total_area::numeric * 100,
+                    waterbody_area_ratio = waterbody_area::numeric / total_area::numeric * 100,
+                    builtup_area_area_ratio = builtup_area_area::numeric / total_area::numeric * 100,
+                    other_area_area_ratio = other_area_area::numeric / total_area::numeric * 100,
+                    ---
+                    arable_land_area_average = round(COALESCE((arable_land_area::numeric / NULLIF(arable_land_count, 0)), 0)::numeric),
+                    hop_garden_area_average = round(COALESCE((hop_garden_area::numeric / NULLIF(hop_garden_count, 0)), 0)::numeric),
+                    vineyard_area_average = round(COALESCE((vineyard_area::numeric / NULLIF(vineyard_count, 0)), 0)::numeric),
+                    garden_area_average = round(COALESCE((garden_area::numeric / NULLIF(garden_count, 0)), 0)::numeric),
+                    orchard_area_average = round(COALESCE((orchard_area::numeric / NULLIF(orchard_count, 0)), 0)::numeric),
+                    grassland_area_average = round(COALESCE((grassland_area::numeric / NULLIF(grassland_count, 0)), 0)::numeric),
+                    forest_area_average = round(COALESCE((forest_area::numeric / NULLIF(forest_count, 0)), 0)::numeric),
+                    waterbody_area_average = round(COALESCE((waterbody_area::numeric / NULLIF(waterbody_count, 0)), 0)::numeric),
+                    builtup_area_area_average = round(COALESCE((builtup_area_area::numeric / NULLIF(builtup_area_count, 0)), 0)::numeric),
+                    other_area_area_average = round(COALESCE((other_area_area::numeric / NULLIF(other_area_count, 0)), 0)::numeric);
+
+                UPDATE ${schema.name}.area_statistics
+                SET
+                    agriculture_land_area = (orchard_area + grassland_area + vineyard_area + hop_garden_area + arable_land_area + garden_area + forest_area) / 10000,
+                    agriculture_land_count = orchard_count + grassland_count + vineyard_count + hop_garden_count + arable_land_count + garden_count + forest_count,
+                    arable_land_area = (arable_land_area/10000)::integer,
+                    hop_garden_area = (hop_garden_area/10000)::integer,
+                    vineyard_area = (vineyard_area/10000)::integer,
+                    garden_area = (garden_area/10000)::integer,
+                    orchard_area = (orchard_area/10000)::integer,
+                    grassland_area = (grassland_area/10000)::integer,
+                    forest_area = (forest_area/10000)::integer,
+                    waterbody_area = (waterbody_area/10000)::integer,
+                    builtup_area_area = (builtup_area_area/10000)::integer,
+                    other_area_area = (other_area_area/10000)::integer;
+                UPDATE ${schema.name}.area_statistics
+                SET
+                    agriculture_land_area_ratio = agriculture_land_area / total_area * 100,
+                    agriculture_land_count_ratio = agriculture_land_count / total_count * 100
+            END;
+            $update_area_statistics$
+            LANGUAGE PLPGSQL
+            SECURITY DEFINER;
+    - rollback:
+        DROP FUNCTION IF EXISTS ${schema.name}.update_area_statistics();
