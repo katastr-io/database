@@ -11,7 +11,12 @@ PostgreSQL 9.6 with PostGIS 2.x is expected.
 
 Database versioning is done solely via liquibase, no direct modifications of database structures are expected.
 
-Make sure the database `cadastre` with the user `c_install` and the schema `c_install` exists before running migration scripts.
+Make sure the following already exists when running migrations:
+
+- `cadastrespace` tablespace
+- `cadastre` database
+- `c_install` user
+- `c_install` schema
 
 ### Initial run
 
