@@ -16,6 +16,7 @@ databaseChangeLog:
             BEGIN
                 INSERT INTO ${schema.name}.municipality_statistics (
                     code,
+                    name,
                     valid_at,
                     total_count,
                     total_area,

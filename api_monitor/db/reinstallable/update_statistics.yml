@@ -1,0 +1,25 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-procedure-${schema.name}.update_statistics
+    runOnChange: true
+    changes:
+    - createProcedure:
+        procedureName: update_statistics
+        dbms: postgresql
+        procedureBody: |-
+            CREATE OR REPLACE FUNCTION ${schema.name}.update_statistics()
+            RETURNS VOID
+            AS
+            $update_statistics$
+            BEGIN
+                PERFORM ${schema.name}.update_area_statistics();
+                PERFORM ${schema.name}.update_municipality_statistics();
+                PERFORM ${schema.name}.update_county_statistics();
+                PERFORM ${schema.name}.update_region_statistics();
+            END;
+            $update_statistics$
+            LANGUAGE PLPGSQL
+            SECURITY DEFINER;
+    - rollback:
+        DROP FUNCTION IF EXISTS ${schema.name}.update_statistics();
