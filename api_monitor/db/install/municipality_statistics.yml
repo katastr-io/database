@@ -75,7 +75,6 @@ databaseChangeLog:
                 builtup_area_area_average /*zastavena_plocha_v_avg*/ numeric,
                 other_area_area_average /*ostatni_plocha_v_avg*/ numeric,
                 --
-                FOREIGN KEY (code) REFERENCES src_ruian.municipality (code),
                 UNIQUE (code, valid_at)
             );
     - rollback:
