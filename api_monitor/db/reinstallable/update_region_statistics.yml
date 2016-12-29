@@ -16,6 +16,7 @@ databaseChangeLog:
             BEGIN
                 INSERT INTO ${schema.name}.region_statistics (
                     code,
+                    name,
                     valid_at,
                     total_count,
                     total_area,
@@ -137,6 +138,12 @@ databaseChangeLog:
                 FROM ${schema.name}.county_statistics cost
                 JOIN src_ruian.county c ON (cost.code = c.code)
                 JOIN src_ruian.region r ON (c.region_code = r.code)
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM ${schema.name}.region_statistics rs
+                    WHERE rs.code = r.code
+                    AND rs.valid_at = cost.valid_at
+                )
                 GROUP BY
                     r.code,
                     r.name,

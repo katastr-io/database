@@ -138,6 +138,12 @@ databaseChangeLog:
                 FROM ${schema.name}.area_statistics arst
                 JOIN src_ruian.area a ON (arst.code = a.code)
                 JOIN src_ruian.municipality m ON (a.municipality_code = m.code)
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM ${schema.name}.municipality_statistics ms
+                    WHERE ms.code = m.code
+                    AND ms.valid_at = arst.valid_at
+                )
                 GROUP BY
                     m.code,
                     m.name,

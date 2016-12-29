@@ -138,6 +138,12 @@ databaseChangeLog:
                 FROM ${schema.name}.municipality_statistics must
                 JOIN src_ruian.municipality m ON (must.code = m.code)
                 JOIN src_ruian.county c ON (m.county_code = c.code)
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM ${schema.name}.county_statistics cs
+                    WHERE cs.code = c.code
+                    AND cs.valid_at = must.valid_at
+                )
                 GROUP BY
                     c.code,
                     c.name,
