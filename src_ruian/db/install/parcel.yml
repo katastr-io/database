@@ -8,13 +8,12 @@ databaseChangeLog:
         sql: |
             CREATE TABLE ${schema.name}.parcel (
                 id bigint PRIMARY KEY,
-                root_number integer,
-                part_number integer,
+                label text,
                 area integer,
                 area_code integer,
                 geom geometry(MULTIPOLYGON, 5514),
                 --
-                FOREIGN KEY (area_code) REFERENCES ${schema.name}.area (code)
+                FOREIGN KEY (area_code) REFERENCES ${schema.name}.area (code) ON DELETE SET NULL
             );
 
             CREATE INDEX ON ${schema.name}.parcel USING gist (geom);
