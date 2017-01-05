@@ -9,6 +9,7 @@ databaseChangeLog:
             CREATE TABLE ${schema.name}.county_statistics (
                 code integer,
                 name text,
+                alike integer[],
                 valid_at date,
                 total_count /*celkovy_pocet_parcel*/ integer,
                 total_area /*celkova_vymera*/ numeric,
