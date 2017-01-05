@@ -8,7 +8,9 @@ databaseChangeLog:
         procedureName: update_area_statistics
         dbms: postgresql
         procedureBody: |-
-            CREATE OR REPLACE FUNCTION ${schema.name}.update_area_statistics()
+            CREATE OR REPLACE FUNCTION ${schema.name}.update_area_statistics(
+                v_valid_at date
+            )
             RETURNS VOID
             AS
             $update_area_statistics$
@@ -47,7 +49,8 @@ databaseChangeLog:
                     forest_area_average = round(COALESCE((forest_area::numeric / NULLIF(forest_count, 0)), 0)::numeric),
                     waterbody_area_average = round(COALESCE((waterbody_area::numeric / NULLIF(waterbody_count, 0)), 0)::numeric),
                     builtup_area_area_average = round(COALESCE((builtup_area_area::numeric / NULLIF(builtup_area_count, 0)), 0)::numeric),
-                    other_area_area_average = round(COALESCE((other_area_area::numeric / NULLIF(other_area_count, 0)), 0)::numeric);
+                    other_area_area_average = round(COALESCE((other_area_area::numeric / NULLIF(other_area_count, 0)), 0)::numeric)
+                WHERE valid_at = v_valid_at;
 
                 UPDATE ${schema.name}.area_statistics
                 SET
@@ -62,14 +65,17 @@ databaseChangeLog:
                     forest_area = (forest_area/10000)::integer,
                     waterbody_area = (waterbody_area/10000)::integer,
                     builtup_area_area = (builtup_area_area/10000)::integer,
-                    other_area_area = (other_area_area/10000)::integer;
+                    other_area_area = (other_area_area/10000)::integer
+                WHERE valid_at = v_valid_at;
+
                 UPDATE ${schema.name}.area_statistics
                 SET
                     agriculture_land_area_ratio = agriculture_land_area / total_area * 100,
-                    agriculture_land_count_ratio = agriculture_land_count / total_count * 100;
+                    agriculture_land_count_ratio = agriculture_land_count / total_count * 100
+                WHERE valid_at = v_valid_at;
             END;
             $update_area_statistics$
             LANGUAGE PLPGSQL
             SECURITY DEFINER;
     - rollback:
-        DROP FUNCTION IF EXISTS ${schema.name}.update_area_statistics();
+        DROP FUNCTION IF EXISTS ${schema.name}.update_area_statistics(date);

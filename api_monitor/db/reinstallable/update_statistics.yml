@@ -8,12 +8,14 @@ databaseChangeLog:
         procedureName: update_statistics
         dbms: postgresql
         procedureBody: |-
-            CREATE OR REPLACE FUNCTION ${schema.name}.update_statistics()
+            CREATE OR REPLACE FUNCTION ${schema.name}.update_statistics(
+                v_valid_at date
+            )
             RETURNS VOID
             AS
             $update_statistics$
             BEGIN
-                PERFORM ${schema.name}.update_area_statistics();
+                PERFORM ${schema.name}.update_area_statistics(v_valid_at);
                 PERFORM ${schema.name}.update_municipality_statistics();
                 PERFORM ${schema.name}.update_county_statistics();
                 PERFORM ${schema.name}.update_region_statistics();
@@ -22,4 +24,4 @@ databaseChangeLog:
             LANGUAGE PLPGSQL
             SECURITY DEFINER;
     - rollback:
-        DROP FUNCTION IF EXISTS ${schema.name}.update_statistics();
+        DROP FUNCTION IF EXISTS ${schema.name}.update_statistics(date);
