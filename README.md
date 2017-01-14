@@ -13,14 +13,16 @@ Database versioning is done solely via liquibase, no direct modifications of dat
 
 Make sure the following already exists when running migrations:
 
-- `cadastrespace` tablespace
-- `cadastre` database
-- `c_install` user
-- `c_install` schema
+- `katastriospace` tablespace
+- `katastrio` database
+- `katastrio` user
+- `katastrio` schema
 
 ### Initial run
 
-Run migrations inside `database` folder first, followed by others.
+Run migrations inside the `database` folder first, followed by others.
+
+Note that the user needs to be superuser to run migrations inside the `database` folder.
 
 ## Deployment
 
