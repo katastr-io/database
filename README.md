@@ -21,3 +21,7 @@ Make sure the following already exists when running migrations:
 ### Initial run
 
 Run migrations inside `database` folder first, followed by others.
+
+## Deployment
+
+Changes are deployed with codeship, but **not applied automatically.**
