@@ -8,7 +8,9 @@ databaseChangeLog:
         procedureName: update_county_statistics
         dbms: postgresql
         procedureBody: |-
-            CREATE OR REPLACE FUNCTION ${schema.name}.update_county_statistics()
+            CREATE OR REPLACE FUNCTION ${schema.name}.update_county_statistics(
+                v_valid_at date
+            )
             RETURNS VOID
             AS
             $update_county_statistics$
@@ -148,9 +150,51 @@ databaseChangeLog:
                     c.code,
                     c.name,
                     must.valid_at;
+
+                WITH similar_items AS (
+                    SELECT
+                        d1.code,
+                        d1.valid_at,
+                        array_agg(d2.code) alike
+                    FROM ${schema.name}.county_statistics d1
+                    JOIN LATERAL (
+                        SELECT
+                            a.code,
+                            a.valid_at,
+                            a+b+c+d+e+f+g+h+i+j
+                        FROM (
+                            SELECT
+                                d2.code,
+                                d2.valid_at,
+                                power(d1.hop_garden_area_ratio - d2.hop_garden_area_ratio,2) a,
+                                power(d1.forest_area_ratio - d2.forest_area_ratio,2) b,
+                                power(d1.arable_land_area_ratio - d2.arable_land_area_ratio,2) c,
+                                power(d1.other_area_area_ratio - d2.other_area_area_ratio,2) d,
+                                power(d1.orchard_area_ratio - d2.orchard_area_ratio,2) e,
+                                power(d1.grassland_area_ratio - d2.grassland_area_ratio,2) f,
+                                power(d1.vineyard_area_ratio - d2.vineyard_area_ratio,2) g,
+                                power(d1.waterbody_area_ratio - d2.waterbody_area_ratio,2) h,
+                                power(d1.garden_area_ratio - d2.garden_area_ratio,2) i,
+                                power(d1.builtup_area_area_ratio - d2.builtup_area_area_ratio,2) j
+                            FROM ${schema.name}.county_statistics d2
+                            WHERE d1.valid_at = d2.valid_at
+                                AND d1.valid_at = v_valid_at
+                                AND d1.code <> d2.code
+                        ) a
+                        ORDER BY 2,3 LIMIT 10
+                    ) d2 ON true
+                    GROUP BY
+                        d1.code,
+                        d1.valid_at
+                )
+                UPDATE ${schema.name}.county_statistics
+                SET alike = si.alike
+                FROM similar_items si
+                WHERE county_statistics.valid_at = si.valid_at
+                    AND county_statistics.code = si.code;
             END;
             $update_county_statistics$
             LANGUAGE PLPGSQL
             SECURITY DEFINER;
     - rollback:
-        DROP FUNCTION IF EXISTS ${schema.name}.update_county_statistics();
+        DROP FUNCTION IF EXISTS ${schema.name}.update_county_statistics(date);

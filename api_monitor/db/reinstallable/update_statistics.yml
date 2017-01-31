@@ -16,9 +16,9 @@ databaseChangeLog:
             $update_statistics$
             BEGIN
                 PERFORM ${schema.name}.update_area_statistics(v_valid_at);
-                PERFORM ${schema.name}.update_municipality_statistics();
-                PERFORM ${schema.name}.update_county_statistics();
-                PERFORM ${schema.name}.update_region_statistics();
+                PERFORM ${schema.name}.update_municipality_statistics(v_valid_at);
+                PERFORM ${schema.name}.update_county_statistics(v_valid_at);
+                PERFORM ${schema.name}.update_region_statistics(v_valid_at);
             END;
             $update_statistics$
             LANGUAGE PLPGSQL
