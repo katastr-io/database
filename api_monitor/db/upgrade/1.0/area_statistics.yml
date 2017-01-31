@@ -1,0 +1,13 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: alter-table-${schema.name}.area_statistics
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            ALTER TABLE ${schema.name}.area_statistics DROP COLUMN alike;
+            ALTER TABLE ${schema.name}.area_statistics ADD COLUMN alike json;
+    - rollback:
+        ALTER TABLE ${schema.name}.area_statistics DROP COLUMN alike;
+        ALTER TABLE ${schema.name}.area_statistics ADD COLUMN alike integer[];

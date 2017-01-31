@@ -155,16 +155,18 @@ databaseChangeLog:
                     SELECT
                         d1.code,
                         d1.valid_at,
-                        array_agg(d2.code) alike
+                        array_agg(json_object('{code, name}'::text[], (concat('{', d2.code, ',', d2.name, '}')::text[]))) alike
                     FROM ${schema.name}.region_statistics d1
                     JOIN LATERAL (
                         SELECT
                             a.code,
+                            a.name,
                             a.valid_at,
                             a+b+c+d+e+f+g+h+i+j
                         FROM (
                             SELECT
                                 d2.code,
+                                d2.name,
                                 d2.valid_at,
                                 power(d1.hop_garden_area_ratio - d2.hop_garden_area_ratio,2) a,
                                 power(d1.forest_area_ratio - d2.forest_area_ratio,2) b,
@@ -181,7 +183,10 @@ databaseChangeLog:
                                 AND d1.valid_at = v_valid_at
                                 AND d1.code <> d2.code
                         ) a
-                        ORDER BY 2,3 LIMIT 10
+                        ORDER BY
+                            a.valid_at,
+                            a+b+c+d+e+f+g+h+i+j
+                        LIMIT 10
                     ) d2 ON true
                     GROUP BY
                         d1.code,

@@ -1,0 +1,16 @@
+databaseChangeLog:
+- property:
+    name: version
+    value: 1.0
+- include:
+    relativeToChangelogFile: true
+    file: area_statistics.yml
+- include:
+    relativeToChangelogFile: true
+    file: municipality_statistics.yml
+- include:
+    relativeToChangelogFile: true
+    file: county_statistics.yml
+- include:
+    relativeToChangelogFile: true
+    file: region_statistics.yml
