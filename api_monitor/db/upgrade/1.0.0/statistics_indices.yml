@@ -1,0 +1,31 @@
+databaseChangeLog:
+- changeSet:
+    author: Michal Zimmermann <zimmicz@gmail.com>
+    id: create-index-${schema.name}.area_statistics_name_idx
+    dbms: postgresql
+    changes:
+    - sql:
+        sql: |
+            CREATE INDEX IF NOT EXISTS area_statistics_code_idx ON ${schema.name}.area_statistics (cast(code AS text));
+            CREATE INDEX IF NOT EXISTS area_statistics_name_idx ON ${schema.name}.area_statistics (name text_pattern_ops);
+
+            CREATE INDEX IF NOT EXISTS municipality_statistics_code_idx ON ${schema.name}.municipality_statistics (cast(code AS text));
+            CREATE INDEX IF NOT EXISTS municipality_statistics_name_idx ON ${schema.name}.municipality_statistics (name text_pattern_ops);
+
+            CREATE INDEX IF NOT EXISTS county_statistics_code_idx ON ${schema.name}.county_statistics (cast(code AS text));
+            CREATE INDEX IF NOT EXISTS county_statistics_name_idx ON ${schema.name}.county_statistics (name text_pattern_ops);
+
+            CREATE INDEX IF NOT EXISTS region_statistics_code_idx ON ${schema.name}.region_statistics (cast(code AS text));
+            CREATE INDEX IF NOT EXISTS region_statistics_name_idx ON ${schema.name}.region_statistics (name text_pattern_ops);
+    - rollback:
+        DROP INDEX IF EXISTS ${schema.name}.area_statistics_code_idx;
+        DROP INDEX IF EXISTS ${schema.name}.area_statistics_name_idx;
+
+        DROP INDEX IF EXISTS ${schema.name}.municipality_statistics_code_idx;
+        DROP INDEX IF EXISTS ${schema.name}.municipality_statistics_name_idx;
+
+        DROP INDEX IF EXISTS ${schema.name}.county_statistics_code_idx;
+        DROP INDEX IF EXISTS ${schema.name}.county_statistics_name_idx;
+
+        DROP INDEX IF EXISTS ${schema.name}.region_statistics_code_idx;
+        DROP INDEX IF EXISTS ${schema.name}.region_statistics_name_idx;

@@ -1,0 +1,8 @@
+databaseChangeLog:
+- property:
+    name: version
+    value: 1.0.0
+- include:
+    relativeToChangelogFile: true
+    file: statistics_indices.yml
+
